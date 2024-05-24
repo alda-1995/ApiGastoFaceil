@@ -1,2 +1,2 @@
-# ApiGastoFaceil
+# ApiGastoFacil
 Api para proyecto que te permite guardar tus gatos diarios
