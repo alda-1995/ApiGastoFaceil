@@ -18,6 +18,11 @@ return new class extends Migration
             $table->date("currentDate");
             $table->boolean('income');
             $table->timestamps();
+
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')->cascadeOnDelete();
         });
     }
 

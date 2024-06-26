@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Transaction extends Model
 {
@@ -14,6 +15,12 @@ class Transaction extends Model
         'amount',
         'description',
         'currentDate',
-        'income'
+        'income',
+        'user_id'
     ];
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Transaction::class, 'transaction_products', 'transaction_id_foreign', 'product_id_foreign');
+    }
 }
