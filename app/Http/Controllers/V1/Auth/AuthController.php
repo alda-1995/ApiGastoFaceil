@@ -17,7 +17,7 @@ class AuthController extends Controller
         $validatedData = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users|max:255',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|max:12',
         ]);
 
         if ($validatedData->fails()) {
@@ -30,9 +30,8 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => $hashedPassword,
             ]);
-
             $token = $user->createToken('Access User')->plainTextToken;
-            return response()->json(['token' => $token], 201);
+            return response()->json(['token' => $token, "user" => $user]);
         } catch (Exception $ex) {
             return response()->json(['error' => "Error al crear el usuario"], 400);
         }
@@ -54,7 +53,7 @@ class AuthController extends Controller
                 $user = User::where('email', $request->email)->first();
                 $user->tokens()->delete();
                 $token = $user->createToken('Access User')->plainTextToken;
-                return response()->json(['token' => $token]);
+                return response()->json(['token' => $token, "user" => $user]);
             }
             return response()->json(['message' => 'Accesos incorretos'], 401);
         } catch (Exception $ex) {
