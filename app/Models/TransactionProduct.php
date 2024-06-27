@@ -9,6 +9,7 @@ class TransactionProduct extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'transaction_products_id';
     protected $fillable = [
         'product_id_foreign',
         'transaction_id_foreign'

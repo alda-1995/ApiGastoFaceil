@@ -21,6 +21,6 @@ class Transaction extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Transaction::class, 'transaction_products', 'transaction_id_foreign', 'product_id_foreign');
+        return $this->belongsToMany(Product::class, 'transaction_products', 'transaction_id_foreign', 'product_id_foreign');
     }
 }

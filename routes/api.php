@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\V1\Auth\AuthController;
 use App\Http\Controllers\V1\Costos\ProductController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\V1\Costos\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,4 +31,11 @@ Route::prefix("products")->group(function () {
     Route::get("detail-product/{idProduct}", [ProductController::class, "detailProduct"])->middleware('auth:sanctum');
     Route::post("create-product", [ProductController::class, "createProduct"])->middleware('auth:sanctum');
     Route::put("update-product/{idProduct}", [ProductController::class, "updateProduct"])->middleware('auth:sanctum');
+});
+
+Route::prefix("costos")->group(function () {
+    Route::get("all-spents/{idUser}", [TransactionController::class, "allTransactions"])->middleware('auth:sanctum');
+    Route::get("detail-spent/{idTransaction}", [TransactionController::class, "detailTransaction"])->middleware('auth:sanctum');
+    Route::post("create-spent", [TransactionController::class, "createTransaction"])->middleware('auth:sanctum');
+    Route::put("update-spent/{idTransaction}", [TransactionController::class, "updateTransaction"])->middleware('auth:sanctum');
 });

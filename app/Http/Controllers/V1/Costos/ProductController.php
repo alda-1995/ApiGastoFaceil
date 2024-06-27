@@ -24,7 +24,7 @@ class ProductController extends Controller
             ->first();
             return $queryDetail;
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al crear el producto"], 400);
+            return response()->json(['error' => "Error al obtener el producto"], 400);
         }
     }
 
@@ -45,7 +45,7 @@ class ProductController extends Controller
                 'data' => $product
             ], Response::HTTP_OK);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al crear el producto"], 400);
+            return response()->json(['error' => "Error al guardar el producto"], 400);
         }
     }
 
