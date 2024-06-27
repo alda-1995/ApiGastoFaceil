@@ -52,6 +52,7 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
                 $user = User::where('email', $request->email)->first();
+                $user->tokens()->delete();
                 $token = $user->createToken('Access User')->plainTextToken;
                 return response()->json(['token' => $token]);
             }
