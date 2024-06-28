@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\V1\Auth\AuthController;
 use App\Http\Controllers\V1\Costos\ProductController;
+use App\Http\Controllers\V1\Costos\ReportController;
 use App\Http\Controllers\V1\Costos\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,4 +41,10 @@ Route::prefix("costos")->group(function () {
     Route::post("create-spent", [TransactionController::class, "createTransaction"])->middleware('auth:sanctum');
     Route::put("update-spent/{idTransaction}", [TransactionController::class, "updateTransaction"])->middleware('auth:sanctum');
     Route::delete('delete-spent/{idTransaction}', [TransactionController::class, "deleteSpent"])->middleware('auth:sanctum');
+});
+
+Route::prefix("reports-costos")->group(function () {
+    Route::get("get-spents-totals/{userId}", [ReportController::class, "getTotalsTransactions"])->middleware('auth:sanctum');
+    Route::get("get-spents-month/{month}/{userId}", [ReportController::class, "getTransactionsMonth"])->middleware('auth:sanctum');
+    Route::get("get-total-incomes/{userId}", [ReportController::class, "getTotalIngresosGastos"])->middleware('auth:sanctum');
 });
