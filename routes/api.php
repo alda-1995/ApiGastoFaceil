@@ -31,6 +31,7 @@ Route::prefix("products")->group(function () {
     Route::get("detail-product/{idProduct}", [ProductController::class, "detailProduct"])->middleware('auth:sanctum');
     Route::post("create-product", [ProductController::class, "createProduct"])->middleware('auth:sanctum');
     Route::put("update-product/{idProduct}", [ProductController::class, "updateProduct"])->middleware('auth:sanctum');
+    Route::delete('delete-products/{idProduct}', [ProductController::class, "deleteProduct"])->middleware('auth:sanctum');
 });
 
 Route::prefix("costos")->group(function () {
@@ -38,4 +39,5 @@ Route::prefix("costos")->group(function () {
     Route::get("detail-spent/{idTransaction}", [TransactionController::class, "detailTransaction"])->middleware('auth:sanctum');
     Route::post("create-spent", [TransactionController::class, "createTransaction"])->middleware('auth:sanctum');
     Route::put("update-spent/{idTransaction}", [TransactionController::class, "updateTransaction"])->middleware('auth:sanctum');
+    Route::delete('delete-spent/{idTransaction}', [TransactionController::class, "deleteSpent"])->middleware('auth:sanctum');
 });

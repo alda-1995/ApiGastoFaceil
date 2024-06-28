@@ -33,7 +33,7 @@ class AuthController extends Controller
             $token = $user->createToken('Access User')->plainTextToken;
             return response()->json(['token' => $token, "user" => $user]);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al crear el usuario"], 400);
+            return response()->json(['error' => "Error al crear el usuario"], 500);
         }
     }
 
@@ -57,7 +57,7 @@ class AuthController extends Controller
             }
             return response()->json(['message' => 'Accesos incorretos'], 401);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Ocurrio un error inesperado al intentar autenticar."], 400);
+            return response()->json(['error' => "Ocurrio un error inesperado al intentar autenticar."], 500);
         }
     }
 
@@ -76,7 +76,7 @@ class AuthController extends Controller
             $user->tokens()->delete();
             return response()->json(['message' => "Vuelve pronto."], 201);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al finalizar la sesión"], 400);
+            return response()->json(['error' => "Error al finalizar la sesión"], 500);
         }
     }
 }

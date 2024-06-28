@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('transaction_id');
             $table->decimal('amount', 10, 2);
-            $table->mediumText('description');
+            $table->mediumText('description')->nullable();
             $table->date("currentDate");
             $table->boolean('income');
             $table->timestamps();

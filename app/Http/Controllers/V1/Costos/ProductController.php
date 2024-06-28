@@ -12,19 +12,24 @@ use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
 
-    public function allProducts($idUser){
-        $products = Product::where("user_id", $idUser)->limit(100)->get();
-        return $products;
+    public function allProducts($idUser)
+    {
+        try {
+            $products = Product::where("user_id", $idUser)->select("product_id as id", "name", "description")->limit(100)->get();
+            return $products;
+        } catch (Exception $ex) {
+            return response()->json(['error' => "Error al consultar tus productos"], 500);
+        }
     }
 
-    public function detailProduct($idProduct){
+    public function detailProduct($idProduct)
+    {
         try {
             $queryDetail = Product::where("product_id", $idProduct)
-            ->with("gastos")
-            ->first();
+                ->first();
             return $queryDetail;
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al obtener el producto"], 400);
+            return response()->json(['error' => "Error al obtener el producto"], 500);
         }
     }
 
@@ -33,7 +38,7 @@ class ProductController extends Controller
         try {
             $validatedData = Validator::make($request->all(), [
                 'name' => 'required|string|max:800',
-                'description' => 'required|string|max:1000',
+                'description' => 'nullable|string|max:1000',
                 'user_id' => 'required|integer|exists:users,id',
             ]);
             if ($validatedData->fails()) {
@@ -45,7 +50,7 @@ class ProductController extends Controller
                 'data' => $product
             ], Response::HTTP_OK);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al guardar el producto"], 400);
+            return response()->json(['error' => "Error al guardar el producto"], 500);
         }
     }
 
@@ -54,7 +59,7 @@ class ProductController extends Controller
         try {
             $validatedData = Validator::make($request->all(), [
                 'name' => 'required|string|max:800',
-                'description' => 'required|string|max:1000',
+                'description' => 'nullable|string|max:1000',
             ]);
             if ($validatedData->fails()) {
                 return response()->json(['error' => $validatedData->errors()->toArray()], 400);
@@ -69,7 +74,7 @@ class ProductController extends Controller
                 'data' => $productUpdate
             ], Response::HTTP_OK);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al actualizar el producto"], 400);
+            return response()->json(['error' => "Error al actualizar el producto"], 500);
         }
     }
 
@@ -80,13 +85,16 @@ class ProductController extends Controller
             if (!$deleteProduct) {
                 return response()->json(['error' => "No existe el producto"], 400);
             }
-            $existRelacionesParticipante = $deleteProduct->secureDelete("gastos");
-            if ($existRelacionesParticipante) {
+            // $existRelacionesParticipante = $deleteProduct->secureDelete("gastos");
+            // if ($existRelacionesParticipante) {
 
-            }
+            // }
             $deleteProduct->delete();
+            return response()->json([
+                'message' => "Se eliminó el producto exitosamente",
+            ], Response::HTTP_OK);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al eliminar el producto"], 400);
+            return response()->json(['error' => "Error al eliminar el producto"], 500);
         }
     }
 }

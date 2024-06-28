@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1\Costos;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\TransactionProduct;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,8 +16,18 @@ class TransactionController extends Controller
 {
     public function allTransactions($idUser)
     {
-        $queryAll = Transaction::where("user_id", $idUser)->limit(100)->get();
-        return $queryAll;
+        try {
+            $queryAll = Transaction::where("user_id", $idUser)
+                ->select("transactions.*")
+                ->limit(100)
+                ->get()->map(function ($transaction) {
+                    $transaction->income = ($transaction->income) ? "Ingreso" : "Gasto";
+                    return $transaction;
+                });
+            return $queryAll;
+        } catch (Exception $ex) {
+            return response()->json(['error' => "Error al consultar tus costos"], 500);
+        }
     }
 
     public function detailTransaction($idTransaction)
@@ -26,7 +37,7 @@ class TransactionController extends Controller
             $queryDetail->products = Transaction::find($idTransaction)->products->pluck('product_id');
             return $queryDetail;
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al obtener el costo"], 400);
+            return response()->json(['error' => "Error al obtener el costo"], 500);
         }
     }
 
@@ -35,7 +46,7 @@ class TransactionController extends Controller
         try {
             $validatedData = Validator::make($request->all(), [
                 'amount' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-                'description' => 'required|string|max:1000',
+                'description' => 'nullable|string|max:1000',
                 'currentDate' => 'required|date',
                 'income' => 'required|boolean',
                 'user_id' => 'required|integer|exists:users,id',
@@ -59,7 +70,7 @@ class TransactionController extends Controller
                 'data' => $newTransaction
             ], Response::HTTP_OK);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al guardar el costo"], 400);
+            return response()->json(['error' => "Error al crear el costo"], 500);
         }
     }
 
@@ -68,7 +79,7 @@ class TransactionController extends Controller
         try {
             $validatedData = Validator::make($request->all(), [
                 'amount' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-                'description' => 'required|string|max:1000',
+                'description' => 'nullable|string|max:1000',
                 'currentDate' => 'required|date',
                 'income' => 'required|boolean',
                 'products' => 'nullable|array'
@@ -81,8 +92,6 @@ class TransactionController extends Controller
                 return response()->json(['error' => "No existe el costo"], 400);
             }
             $transactionUpdate->update($request->all());
-
-
             $deleteTransactionProducts = TransactionProduct::where('transaction_id_foreign', $idTransaction)
                 ->whereNotIn('product_id_foreign', $request->products)->get()->pluck('transaction_products_id');
             TransactionProduct::destroy(collect($deleteTransactionProducts));
@@ -100,7 +109,27 @@ class TransactionController extends Controller
                 'data' => $transactionUpdate
             ], Response::HTTP_OK);
         } catch (Exception $ex) {
-            return response()->json(['error' => "Error al guardar el costo"], 400);
+            return response()->json(['error' => "Error al guardar el costo"], 500);
+        }
+    }
+
+    public function deleteSpent($idSpent)
+    {
+        try {
+            $deleteQuery = Transaction::find($idSpent);
+            if (!$deleteQuery) {
+                return response()->json(['error' => "No existe el costo"], 400);
+            }
+            // $existRelacionesParticipante = $deleteProduct->secureDelete("gastos");
+            // if ($existRelacionesParticipante) {
+
+            // }
+            $deleteQuery->delete();
+            return response()->json([
+                'message' => "Se eliminó el costo exitosamente",
+            ], Response::HTTP_OK);
+        } catch (Exception $ex) {
+            return response()->json(['error' => $ex->getMessage()], 500);
         }
     }
 }
