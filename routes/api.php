@@ -47,4 +47,6 @@ Route::prefix("reports-costos")->group(function () {
     Route::get("get-spents-totals/{userId}", [ReportController::class, "getTotalsTransactions"])->middleware('auth:sanctum');
     Route::get("get-spents-month/{month}/{userId}", [ReportController::class, "getTransactionsMonth"])->middleware('auth:sanctum');
     Route::get("get-total-incomes/{userId}", [ReportController::class, "getTotalIngresosGastos"])->middleware('auth:sanctum');
+    Route::get("get-charts-incomes/{userId}", [ReportController::class, "getChartTotalIngresosGastos"])->middleware('auth:sanctum');
+    Route::get("get-products-most-sold/{userId}", [ReportController::class, "getProductsMostSold"])->middleware('auth:sanctum');
 });
