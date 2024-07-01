@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\V1\Auth\AuthController;
+use App\Http\Controllers\V1\Auth\ForgotPasswordController;
+use App\Http\Controllers\V1\Auth\ResetPasswordController;
 use App\Http\Controllers\V1\Costos\ProductController;
 use App\Http\Controllers\V1\Costos\ReportController;
 use App\Http\Controllers\V1\Costos\TransactionController;
@@ -26,6 +28,9 @@ Route::prefix("auth")->group(function () {
     Route::post("login", [AuthController::class, "authenticate"]);
     Route::post("logout", [AuthController::class, "logout"]);
 });
+
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.reset');
 
 Route::prefix("products")->group(function () {
     Route::get("all-products/{idUser}", [ProductController::class, "allProducts"])->middleware('auth:sanctum');
