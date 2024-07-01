@@ -21,6 +21,7 @@ class ReportController extends Controller
 
             $queryByCurrent = Transaction::where("user_id", $userId)
                 ->where('currentDate', $dateCurrent)
+                ->where('income', false)
                 ->get();
             $totalAmountDay = number_format((float)$queryByCurrent->sum('amount'), 2);
 
@@ -30,6 +31,7 @@ class ReportController extends Controller
 
             $queryByMonth = Transaction::where("user_id", $userId)
                 ->whereBetween('currentDate', [$startDateMonth, $endDateMonth])
+                ->where('income', false)
                 ->get();
 
             $totalAmountMonth = number_format((float)$queryByMonth->sum('amount'), 2);
@@ -40,6 +42,7 @@ class ReportController extends Controller
 
             $queryDateYear = Transaction::where("user_id", $userId)
                 ->whereBetween('currentDate', [$startDateYear, $endDateYear])
+                ->where('income', false)
                 ->get();
 
             $totalAmountYear = number_format((float)$queryDateYear->sum('amount'), 2);
